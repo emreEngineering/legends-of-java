@@ -1,0 +1,165 @@
+@startuml
+class Main {
++ {static} void main(String[])
+}
+
+class strategies.MeleeAttack {
+- Random random
++ Damage computeDamage(Character,Character)
+}
+
+
+class characters.Zombie {
++ <<Create>> Zombie(String)
++ List<LootItem> dropLoot()
+}
+
+enum items.DamageType {
++  PHYSICAL
++  FIRE
++  ICE
++  POISON
+}
+
+interface characters.Defender {
+~ int defend(Damage)
+}
+
+class engine.BattleEngine {
+- GameIO io
+- long stepDelayMillis
++ <<Create>> BattleEngine(GameIO)
++ <<Create>> BattleEngine(GameIO,long)
+- void pause()
++ BattleResult fight(Character,Character)
+}
+
+
+enum items.Rarity {
++  COMMON
++  RARE
++  EPIC
+}
+
+interface strategies.DefenseStrategy {
+~ int mitigate(Character,Damage)
+}
+
+class strategies.ShieldBlock {
++ int mitigate(Character,Damage)
+}
+
+interface engine.GameIO {
+~ String readLine()
+~ void printLine(String)
+}
+
+class items.LootItem {
+- String name
+- Rarity rarity
++ <<Create>> LootItem(String,Rarity)
++ String getName()
++ Rarity getRarity()
+}
+
+
+class engine.ConsoleIO {
+- Scanner scanner
++ String readLine()
++ void printLine(String)
+}
+
+
+class characters.Warrior {
++ <<Create>> Warrior(String)
++ List<LootItem> dropLoot()
+}
+
+class engine.BattleResult {
+- Character winner
++ <<Create>> BattleResult(Character)
++ Character getWinner()
+}
+
+
+class strategies.FireballAttack {
+- Random random
++ Damage computeDamage(Character,Character)
+}
+
+
+interface characters.Attacker {
+~ void attack(Character)
+}
+
+abstract class characters.Monster {
++ <<Create>> Monster(String,int)
+}
+
+class strategies.MagicBarrier {
++ int mitigate(Character,Damage)
+}
+
+class characters.Mage {
++ <<Create>> Mage(String)
++ List<LootItem> dropLoot()
+}
+
+abstract class characters.Character {
+# String name
+# int health
+# int maxHealth
+# AttackStrategy attackStrategy
+# DefenseStrategy defenseStrategy
++ <<Create>> Character(String,int)
++ String getName()
++ int getHealth()
++ boolean isAlive()
++ void attack(Character)
++ int defend(Damage)
++ void takeDamage(int)
++ {abstract}List<LootItem> dropLoot()
+}
+
+
+class characters.Dragon {
++ <<Create>> Dragon(String)
++ List<LootItem> dropLoot()
+}
+
+abstract class characters.Player {
+# int experience
++ <<Create>> Player(String,int)
++ void gainExperience(int)
+}
+
+
+class items.Damage {
+- int amount
+- DamageType type
++ <<Create>> Damage(int,DamageType)
++ int getAmount()
++ DamageType getType()
+}
+
+
+interface strategies.AttackStrategy {
+~ Damage computeDamage(Character,Character)
+}
+
+
+
+strategies.AttackStrategy <|.. strategies.MeleeAttack
+characters.Monster <|-- characters.Zombie
+strategies.DefenseStrategy <|.. strategies.ShieldBlock
+engine.GameIO <|.. engine.ConsoleIO
+characters.Player <|-- characters.Warrior
+strategies.AttackStrategy <|.. strategies.FireballAttack
+characters.Character <|-- characters.Monster
+strategies.DefenseStrategy <|.. strategies.MagicBarrier
+characters.Player <|-- characters.Mage
+characters.Attacker <|.. characters.Character
+characters.Defender <|.. characters.Character
+characters.Monster <|-- characters.Dragon
+characters.Character <|-- characters.Player
+@enduml
